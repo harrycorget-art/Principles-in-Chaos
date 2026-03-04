@@ -1,20 +1,15 @@
-import json
-import os
 from datetime import datetime, timezone
 
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 
 from components.layout import inject_css, render_page_header, render_sidebar_meta
 from config import DOMAIN_COLORS, PLOTLY_TEMPLATE, RISK_COLORS
 from data import tech_ai, finance, culture
+from data.poll_storage import load_poll_data, save_response
 
 # ── Constants ─────────────────────────────────────────────────────────────────
-
-POLL_FILE = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "poll_results.json")
-MAX_RESPONSES = 1000
 
 ALL_TRENDS = (
     [(t["name"], t["confidence"], "Technology & AI") for t in tech_ai.TRENDS]
@@ -36,29 +31,6 @@ CROSS_DOMAIN_SIGNALS = [
     "Dollar Reserve Pressure",
     "Attention Economy Collapse",
 ]
-
-# ── Poll I/O ──────────────────────────────────────────────────────────────────
-
-
-def load_poll_data() -> dict:
-    if not os.path.exists(POLL_FILE):
-        return {"responses": [], "last_updated": None, "response_count": 0}
-    with open(POLL_FILE, "r") as f:
-        return json.load(f)
-
-
-def save_response(new_response: dict) -> None:
-    data = load_poll_data()
-    data["responses"].append(new_response)
-    if len(data["responses"]) > MAX_RESPONSES:
-        data["responses"] = data["responses"][-MAX_RESPONSES:]
-    data["response_count"] = len(data["responses"])
-    data["last_updated"] = datetime.now(timezone.utc).isoformat()
-    tmp_path = POLL_FILE + ".tmp"
-    with open(tmp_path, "w") as f:
-        json.dump(data, f, indent=2)
-    os.replace(tmp_path, POLL_FILE)
-
 
 # ── Page setup ────────────────────────────────────────────────────────────────
 

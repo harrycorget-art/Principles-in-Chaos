@@ -149,6 +149,55 @@ Run `/trend-analysis` in any Claude Code session opened in this directory to:
 
 ---
 
+## Deploying to Streamlit Community Cloud
+
+1. Push this repo to GitHub
+2. Go to [share.streamlit.io](https://share.streamlit.io) → **New app** → select repo + `app.py`
+3. Under **App Settings → Secrets**, paste the contents of `secrets.example.toml` with real values
+4. Click **Deploy**
+
+The app opens at a public `*.streamlit.app` URL. Poll responses persist in Google Sheets.
+
+---
+
+## Google Sheets Setup (for persistent poll data)
+
+The Community Poll page writes to Google Sheets when credentials are configured,
+and falls back to a local `data/poll_results.json` file in development.
+
+### 1. Create the Sheet
+
+1. Go to [sheets.google.com](https://sheets.google.com) and create a new spreadsheet
+2. Name it exactly: **`Principles in Chaos — Poll Responses`**
+   (or change `spreadsheet_name` in your secrets to match whatever you name it)
+3. Leave it empty — the app writes the header row automatically on first submission
+
+### 2. Create a Google Cloud Service Account
+
+1. Go to [console.cloud.google.com](https://console.cloud.google.com) → create a new project (or use an existing one)
+2. Enable the **Google Sheets API** and **Google Drive API**
+3. Go to **IAM & Admin → Service Accounts** → **Create Service Account**
+4. Name it (e.g. `poll-writer`), skip optional fields, click **Done**
+5. Click the service account → **Keys** tab → **Add Key → Create new key → JSON**
+6. Download the JSON file
+
+### 3. Share the Sheet with the Service Account
+
+1. Open the JSON key file — copy the `client_email` value
+   (looks like `poll-writer@your-project.iam.gserviceaccount.com`)
+2. Open your Google Sheet → **Share** → paste that email → **Editor** role → **Share**
+
+### 4. Configure Secrets
+
+Copy `secrets.example.toml` → `.streamlit/secrets.toml` and fill in the values
+from the downloaded JSON key file.
+
+`.streamlit/secrets.toml` is gitignored — it will never be committed.
+
+**On Streamlit Cloud:** paste the same TOML into App Settings → Secrets.
+
+---
+
 ## Sources
 
 28 sources including IBM, MIT Technology Review, J.P. Morgan Global Research, IMF, World Bank, Grayscale, Coinbase Institutional, World Economic Forum, Council on Foreign Relations, Stimson Center, arXiv, Ogilvy, Capgemini, and others. Full bibliography on the Sources page.

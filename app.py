@@ -1,18 +1,13 @@
-import json
-import os
-
 import streamlit as st
 from config import APP_TITLE, PAGE_ICON
 from components.layout import inject_css, render_sidebar_meta
-
-_POLL_FILE = os.path.join(os.path.dirname(__file__), "data", "poll_results.json")
+from data.poll_storage import load_poll_data
 
 
 def _poll_count() -> int:
     try:
-        with open(_POLL_FILE) as f:
-            return json.load(f).get("response_count", 0)
-    except (FileNotFoundError, json.JSONDecodeError):
+        return load_poll_data()["response_count"]
+    except Exception:
         return 0
 
 st.set_page_config(
