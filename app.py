@@ -1,6 +1,19 @@
+import json
+import os
+
 import streamlit as st
 from config import APP_TITLE, PAGE_ICON
 from components.layout import inject_css, render_sidebar_meta
+
+_POLL_FILE = os.path.join(os.path.dirname(__file__), "data", "poll_results.json")
+
+
+def _poll_count() -> int:
+    try:
+        with open(_POLL_FILE) as f:
+            return json.load(f).get("response_count", 0)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return 0
 
 st.set_page_config(
     page_title=APP_TITLE,
@@ -16,10 +29,11 @@ st.title(f"{PAGE_ICON}  {APP_TITLE}")
 st.markdown("#### A multi-domain research dashboard — Q1 2026")
 st.divider()
 
-col1, col2, col3 = st.columns(3)
+col1, col2, col3, col4 = st.columns(4)
 col1.metric("Domains Analyzed", "3", "Tech · Finance · Culture")
 col2.metric("Trends Tracked", "30", "10 per domain")
 col3.metric("Sources", "28", "Academic · Institutional · News")
+col4.metric("Poll Responses", str(_poll_count()), "Add yours on page 7")
 
 st.divider()
 

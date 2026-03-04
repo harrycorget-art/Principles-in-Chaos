@@ -24,6 +24,7 @@ Opens at `http://localhost:8501`.
 | **Wildcard scenarios** | 9 (3 per domain) |
 | **Sources** | 28 (institutional, academic, news) |
 | **Meta-predictions** | 5 cross-domain structural forecasts |
+| **Community poll** | 12-question assessment — compare your intuition to the research |
 
 ---
 
@@ -37,6 +38,7 @@ Opens at `http://localhost:8501`.
 | **Culture & Society** | Digital fatigue, authenticity premium, multigenerational shifts | Same layout as Tech |
 | **Cross-Domain Synthesis** | Signal convergence matrix (10×3); 5 meta-predictions; consolidated wildcards | Heatmap · expandable predictions with progress bars |
 | **Sources** | 28 clickable citations | Domain filter · grouped by type |
+| **Community Poll** | 12-question assessment; community vs. research confidence gaps; emerging trend nominations | Form · 4-tab results (domain priority, confidence comparison, wildcard risk, emerging trends) |
 
 ---
 
@@ -80,14 +82,19 @@ Principles-in-Chaos/
 ├── app.py                         # Entry point — landing page
 ├── requirements.txt
 ├── config.py                      # Colors, thresholds, domain constants
+├── CLAUDE.md                      # Claude Code project context
 ├── assets/
 │   └── style.css                  # Dark-theme polish
+├── .claude/
+│   ├── mcp.json                   # Project-level MCP server config (fetch)
+│   └── settings.json              # Pre-approved MCP tool permissions
 ├── data/
 │   ├── tech_ai.py                 # 10 trends + 3 wildcards + metrics
 │   ├── finance.py                 # 10 trends + 3 wildcards + metrics
 │   ├── culture.py                 # 10 trends + 3 wildcards + metrics
 │   ├── cross_domain.py            # Convergence matrix (10×3) + meta-predictions
-│   └── sources.py                 # 28 curated sources
+│   ├── sources.py                 # 28 curated sources
+│   └── poll_results.json          # Community poll responses (append-only, max 1000)
 ├── components/
 │   ├── charts.py                  # 5 Plotly chart factory functions
 │   ├── cards.py                   # Metric rows, wildcard cards, trend accordions
@@ -99,8 +106,46 @@ Principles-in-Chaos/
     ├── 3_Finance_Markets.py
     ├── 4_Culture_Society.py
     ├── 5_Cross_Domain_Synthesis.py
-    └── 6_Sources.py
+    ├── 6_Sources.py
+    └── 7_Community_Poll.py        # 12-question poll + 4-tab aggregate results
 ```
+
+---
+
+## MCP Server Setup
+
+The project includes a pre-configured MCP server for live web research during Claude sessions.
+
+**The fetch server** (no API key required) launches automatically via `npx`:
+
+```bash
+# No setup needed — it launches automatically when Claude Code starts in this directory.
+# The first fetch call may take 5–10 seconds while npx installs the package.
+```
+
+**Brave Search** (optional, requires API key):
+
+```bash
+export BRAVE_API_KEY=BSAxxxxxxxx   # Get a free key at brave.com/search/api
+# Then restart Claude Code — brave-search server will activate automatically
+```
+
+**What MCP enables in this project:**
+- Validate the 28 source URLs from `data/sources.py`
+- Fetch institutional reports (IMF, WEF, J.P. Morgan) to check for updated forecasts
+- Research emerging trend nominations from the community poll
+
+---
+
+## Custom Claude Skill: `/trend-analysis`
+
+Run `/trend-analysis` in any Claude Code session opened in this directory to:
+
+1. Load all 30 research trends and compute sentiment gaps against community poll data
+2. Validate high-divergence trend sources via the MCP fetch server
+3. Cluster freetext emerging trend nominations into candidate themes
+4. Output a structured report: Sentiment Gap Analysis · Domain Priority · Wildcard Risk · Emerging Trends
+5. Optionally apply updates to data files (confidence scores, new wildcards)
 
 ---
 
