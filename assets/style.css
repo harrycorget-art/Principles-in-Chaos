@@ -1,0 +1,36 @@
+/* ── Principles in Chaos — custom dark theme polish ─────────────────────── */
+
+/* Page background */
+[data-testid="stAppViewContainer"] {
+    background-color: #0f172a;
+}
+
+[data-testid="stSidebar"] {
+    background-color: #0e1117;
+}
+
+/* Metric cards */
+[data-testid="metric-container"] {
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(255,255,255,0.07);
+}
+
+/* Expander header */
+[data-testid="stExpander"] > details > summary {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Divider */
+hr {
+    border-color: rgba(255,255,255,0.08);
+}
+
+/* Info boxes */
+[data-testid="stInfo"] {
+    background: rgba(0, 180, 216, 0.08);
+    border-left: 3px solid #00B4D8;
+}
